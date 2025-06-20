@@ -1,6 +1,7 @@
 import {Router} from 'express'
 import { logOutUser, siginUpUser ,loginUser, updateProfile} from '../controllers/auth.controllers.js'
 import { protectedRoute } from '../middlewares/auth.middleware.js'
+import { upload } from '../middlewares/multer.middleware.js'
 
 const router = Router()
 
@@ -11,7 +12,7 @@ router.route('/logout').post(logOutUser)
 
 
 // profile route
-router.route('/profile').put(protectedRoute , updateProfile)
+router.route('/profile').put(upload.single("file"),protectedRoute , updateProfile)
 
 // check user is authenticated or not
 router.route('/check').get(protectedRoute , (req,res) =>{

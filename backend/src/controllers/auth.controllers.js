@@ -1,6 +1,9 @@
 import {asyncHandler} from '../utils/asyncHandler.js'
 import { User } from '../models/user.models.js';
-import { uploadOnCloudinary } from '../utils/cloudinary.js';
+import cloudinary from '../utils/cloudinary.js';
+// import { uploadOnCloudinary } from '../utils/cloudinary.js';
+
+
 
 
 // user signin controller
@@ -144,18 +147,18 @@ export const logOutUser = asyncHandler( async (req ,res) => {
 // update profile 
 export const updateProfile = asyncHandler( async (req , res) => {
     try {
-    const {profilePic} = req.body;
+    const {profile} = req.body;
     const userId = req.user._id;
 
-    if(!profilePic){
+    if(!profile){
         return res.status(400).json({
             message : "Profile Picture is required!"
         })
     }
 
-    const uploadingPic = await uploadOnCloudinary(profilePic);
+    const uploadingPic = await cloudinary.uploader.upload(profile);
     const updatedUser = await User.findByIdAndUpdate(userId , {
-        profilePic : uploadingPic.secure_url},
+        profile : uploadingPic.secure_url},
         {new  : true}
         ).select('-password')
 
@@ -165,7 +168,8 @@ export const updateProfile = asyncHandler( async (req , res) => {
     })
         
     } catch (error) {
-        
+        console.log("error in update profile:", error);
+        res.status(500).json({ message: "Internal server error" });
     }
 
 })
