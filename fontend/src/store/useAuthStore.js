@@ -23,11 +23,9 @@ export const useAuthStore = create((set ,get) => ({
       const response = await axiosInsatnce.get('/auth/check', {
         withCredentials: true,
       });
-      // console.log(response.data);
       set({ authUser: response.data });
       get().connectionSocket()
     } catch (error) {
-      console.log('Error checking auth', error);
       set({ authUser: null });
     } finally {
       set({ isCheckingAuth: false });
@@ -72,7 +70,6 @@ export const useAuthStore = create((set ,get) => ({
         get().connectionSocket()
     } catch (error) {
         toast.error(error.response.data?.message || "Login Failed!")
-        console.log("error from login " , error.message);
         
     }finally{
         set({isLoggingIn : false})
@@ -87,7 +84,6 @@ export const useAuthStore = create((set ,get) => ({
       set({authUser : resp.data})
       toast.success("Profile updated Successfully!")
     } catch (error) {
-      console.log("Errorn in update profile" ,error);
       toast.error(error.response.data?.message || "Failed to update Profile!")
       
     }finally{
@@ -99,11 +95,23 @@ export const useAuthStore = create((set ,get) => ({
     const {authUser} = get()
     if (! authUser || get.socket?.connected) return;
 
-    const socket = io(BASE_URL)
+    const socket = io(BASE_URL, {
+      query: {
+        userId: authUser?.user?._id,
+      },
+    });
+    // connected to the socket
     socket.connect()
+
+    set({socket : socket});
+
+    socket.on("getOnlineUsers", (userIds) => {
+      set({ onlineUsers: userIds });
+    });
   },
 
-  disconnectSocket : () => {}
-
+  disconnectSocket : () => {
+    if(get().socket?.connected)  get().socket.disconnect();
+  },
 
 }));

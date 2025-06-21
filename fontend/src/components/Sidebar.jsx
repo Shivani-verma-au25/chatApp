@@ -24,10 +24,7 @@ function Sidebar() {
     getUser();
   }, [getUser]);
 
-  
-    console.log("user " , users);
-    
-
+    // if isdebarloading is true
     if(isUsersLoading) return <SidebarSkeleton/>
 
   return (
@@ -37,7 +34,7 @@ function Sidebar() {
           <Users className="size-6" />
           <span className="font-medium hidden lg:block">Contacts</span>
         </div>
-        {/* TODO: Online filter toggle */}
+        {/*  Online filter toggle */}
         <div className="mt-3 hidden lg:flex items-center gap-2">
           <label className="cursor-pointer flex items-center gap-2">
             <input

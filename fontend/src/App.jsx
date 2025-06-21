@@ -13,14 +13,13 @@ import { useTheselector } from './store/useThemseclector'
 
 
 function App() {
-    const {authUser , checkAuth ,isCheckingAuth} = useAuthStore()
+    const {authUser , checkAuth ,isCheckingAuth ,onlineUsers} = useAuthStore()
     const {theme} = useTheselector()
-
+   
     useEffect(()=> {      
       checkAuth()
     },[checkAuth])
 
-  console.log({authUser},"authuser");
 
   // if (isCheckingAuth && !authUser) return (
   if (isCheckingAuth && !authUser) return (
