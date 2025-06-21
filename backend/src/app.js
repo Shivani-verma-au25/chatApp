@@ -5,7 +5,9 @@ import cookieParser from 'cookie-parser'
 import cors from 'cors'
 import http from 'http'
 import {Server} from 'socket.io'
+import path from 'path'
 
+const __dirname = path.resolve();
 const app = express()
 
 export const server = http.createServer(app)
@@ -36,6 +38,15 @@ import messageRouter from "./routes/message.router.js"
 
 app.use('/api/auth', AuthRouter)
 app.use('/api/message', messageRouter)
+
+
+if (process.env.NODE_ENV === 'production') {
+    app.use(express.static(path.join(__dirname , '../dist')))   
+
+    app.get('*', (req ,res) => {
+        res.sendFile(path.join(__dirname ,"../dist" ,"index.html"))
+    })
+}
 
 
 // sockets
